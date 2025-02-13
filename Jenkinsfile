@@ -45,9 +45,10 @@ pipeline {
                 }
             }
             steps {
+                // start the server in the build directory and run tests
                 sh '''
                     npm install serve
-                    node_modules/.bin/serve -s build &      # start the server in the build directory
+                    node_modules/.bin/serve -s build &
                     sleep 10
                     npx playwright test --reporter=html
                 '''
