@@ -47,7 +47,7 @@ pipeline {
                         }
                     }
                 }
-                stage('E2E') {
+                stage('Local E2E') {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -57,7 +57,7 @@ pipeline {
                     steps {
                         // start the server in the build directory and run tests
                         sh '''
-                            echo "E2E tests stage"
+                            echo "Local E2E tests stage"
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
@@ -66,7 +66,7 @@ pipeline {
                     }
                     post {
                         always {
-                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                            publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                     }                    
                 }       
@@ -90,5 +90,28 @@ pipeline {
                 '''
             }
         }
+        stage('Prod E2E') {
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+            environment {
+                CI_ENVIRONMENT_URL = 'https://jocular-douhua-8e3be8.netlify.app'
+            }
+            steps {
+                // start the server in the build directory and run tests
+                sh '''
+                    echo "Prod E2E tests stage"
+                    npx playwright test
+                '''
+            }
+            post {
+                always {
+                    publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Prod E2E HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                }
+            }                    
+        }  
     }
 }
