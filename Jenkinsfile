@@ -36,7 +36,7 @@ pipeline {
                     }
                     steps {
                         sh '''
-                            echo "Test stage"
+                            echo "Unit tests stage"
                             test -f build/index.html
                             npm test
                         '''
@@ -57,6 +57,7 @@ pipeline {
                     steps {
                         // start the server in the build directory and run tests
                         sh '''
+                            echo "E2E tests stage"
                             npm install serve
                             node_modules/.bin/serve -s build &
                             sleep 10
@@ -80,6 +81,7 @@ pipeline {
             }
             steps {
                 sh '''
+                    echo "Deploy stage"
                     npm install netlify-cli
                     node_modules/.bin/netlify --version
                     echo "Deploying to production. Site ID: $NETLIFY_SITE_ID"
