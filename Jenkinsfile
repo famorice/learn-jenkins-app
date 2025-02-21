@@ -47,7 +47,7 @@ pipeline {
                         }
                     }
                 }
-                stage('Local E2E') {
+                stage('Local E2E tests') {
                     agent {
                         docker {
                             image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -93,7 +93,7 @@ pipeline {
                 }
             }
         }
-        stage('Staging E2E') {
+        stage('Staging E2E tests') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -106,6 +106,7 @@ pipeline {
             steps {
                 sh '''
                     echo "Staging E2E tests stage"
+                    echo "Staging URL is: $CI_ENVIRONMENT_URL"
                     npx playwright test
                 '''
             }
@@ -138,7 +139,7 @@ pipeline {
                 '''
             }
         }
-        stage('Prod E2E') {
+        stage('Prod E2E tests') {
             agent {
                 docker {
                     image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
@@ -152,6 +153,7 @@ pipeline {
                 // start the server in the build directory and run tests
                 sh '''
                     echo "Prod E2E tests stage"
+                    echo "Prod URL is: $CI_ENVIRONMENT_URL"
                     npx playwright test
                 '''
             }
