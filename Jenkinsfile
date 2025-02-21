@@ -4,6 +4,7 @@ pipeline {
     environment {
         NETLIFY_SITE_ID = '0b7d8851-5d0f-42cf-ad06-bb6a86e382f9'
         NETLIFY_AUTH_TOKEN = credentials('netlify-token')
+        REACT_APP_VERSION = '1.2.3'
     }
     stages {
         stage('Build') {
@@ -116,11 +117,13 @@ pipeline {
                 }
             }                    
         }
+        /*
         stage('Approval') {
             steps {
                 input message: 'Do you wish to deploy to production ?', ok: 'Yes, I am sure!'
             }
         }
+        */
         stage('Deploy prod') {
             agent {
                 docker {
@@ -150,7 +153,6 @@ pipeline {
                 CI_ENVIRONMENT_URL = 'https://jocular-douhua-8e3be8.netlify.app'
             }
             steps {
-                // start the server in the build directory and run tests
                 sh '''
                     echo "Prod E2E tests stage"
                     echo "Prod URL is: $CI_ENVIRONMENT_URL"
