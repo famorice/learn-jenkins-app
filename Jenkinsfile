@@ -11,8 +11,7 @@ pipeline {
             steps {
                 sh '''
                     docker build -t my-playwright .
-                    npm --version
-                    netlify --version
+                    docker container run -it my-playwright bash && node --version && npm --version && netlify --version
                 '''
             }
         }
@@ -26,7 +25,6 @@ pipeline {
             steps {
                 sh '''
                     echo "Build stage"
-                    node --version
                     ls -la
                     npm ci
                     npm run build
