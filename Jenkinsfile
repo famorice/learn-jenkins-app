@@ -11,7 +11,6 @@ pipeline {
             steps {
                 sh '''
                     docker build -t my-playwright .
-                    node --version
                     npm --version
                     netlify --version
                 '''
@@ -20,13 +19,14 @@ pipeline {
         stage('Build') {
             agent {
                 docker {
-                    image 'my-playwright'
+                    image 'node:18-alpine'
                     reuseNode true
                 }
             }
             steps {
                 sh '''
                     echo "Build stage"
+                    node --version
                     ls -la
                     npm ci
                     npm run build
