@@ -11,7 +11,6 @@ pipeline {
             steps {
                 sh '''
                     docker build -t my-playwright .
-                    docker container run -it my-playwright bash && node --version && npm --version && netlify --version
                 '''
             }
         }
