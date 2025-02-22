@@ -9,7 +9,12 @@ pipeline {
     stages {
         stage('Docker') {
             steps {
-                sh 'docker build -t my-playwright .'
+                sh '''
+                    docker build -t my-playwright .
+                    node --version
+                    npm --version
+                    netlify --version
+                '''
             }
         }
         stage('Build') {
@@ -23,8 +28,6 @@ pipeline {
                 sh '''
                     echo "Build stage"
                     ls -la
-                    node --version
-                    npm --version
                     npm ci
                     npm run build
                     ls -la
@@ -64,7 +67,6 @@ pipeline {
                         // start the server in the build directory and run tests
                         sh '''
                             echo "Local E2E tests stage"
-                            npm install serve
                             serve -s build &
                             sleep 10
                             npx playwright test
@@ -88,7 +90,6 @@ pipeline {
             steps {
                 sh '''
                     echo "Deploy stage"
-                    netlify --version
                     echo "Deploying to staging. Site ID: $NETLIFY_SITE_ID"
                     netlify status
                     netlify deploy --dir=build --json > deploy-output.json
