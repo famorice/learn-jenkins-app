@@ -2,8 +2,6 @@ pipeline {
     agent any
 
     environment {
-        // NETLIFY_SITE_ID = '0b7d8851-5d0f-42cf-ad06-bb6a86e382f9'
-        // NETLIFY_AUTH_TOKEN = credentials('netlify-token')
         REACT_APP_VERSION = "1.0.$BUILD_ID"
         AWS_DEFAULT_REGION = 'us-east-1'
     }
@@ -20,7 +18,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
                     sh '''
                         aws --version
-                        aws ecs register-task-definition --cli-input-json file://C:\applis\learn-jenkins-app\aws\task-definition-prod.json
+                        aws ecs register-task-definition --cli-input-json file://aws/task-definition-prod.json
                     '''
                 }                
             }
