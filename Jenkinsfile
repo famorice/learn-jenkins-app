@@ -25,6 +25,8 @@ pipeline {
                         aws ecs update-service --cluster LearnJenkinsApp-Cluster-Prod \
                         --service LearnJenkinsApp-Service-Prod \
                         --task-definition LearnJenkinsApp-TaskDefinition-Prod:$LATEST_TD_REVISION
+                        aws ecs wait services-stable --cluster LearnJenkinsApp-Cluster-Prod \
+                        --services LearnJenkinsApp-Service-Prod
                     '''
                 }                
             }
