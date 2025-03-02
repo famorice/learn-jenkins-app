@@ -9,6 +9,38 @@ pipeline {
         AWS_ECS_TD_PROD = 'LearnJenkinsApp-TaskDefinition-Prod'
     }
     stages {
+        stage('Build') {
+            agent {
+                docker {
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    echo "Build stage"
+                    ls -la
+                    npm ci
+                    npm run build
+                    ls -la
+                '''
+            }
+        }
+        stage('Build Docker image') {
+            agent {
+                docker {
+                    image 'amazon/aws-cli:2.24.10'
+                    reuseNode true
+                    args '-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=""'
+                }
+            }
+            steps {
+                sh '''
+                    amazon-linux-extras install docker
+                    docker build -t myjenkinsapp .
+                '''
+            }
+        }
         stage('Deploy to AWS') {
             agent {
                 docker {
@@ -32,23 +64,6 @@ pipeline {
                         --services $AWS_ECS_SERVICE_PROD
                     '''
                 }                
-            }
-        }
-        stage('Build') {
-            agent {
-                docker {
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps {
-                sh '''
-                    echo "Build stage"
-                    ls -la
-                    npm ci
-                    npm run build
-                    ls -la
-                '''
             }
         }
         // stage('Tests') {
